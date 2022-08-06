@@ -1,3 +1,5 @@
+from itertools import product
+from math import prod
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -102,3 +104,17 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField()
+
+
+
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
+    # ForeignKey to the Class Product
+    # on_delete=models.CASCADE so when we delete the product, all the reviews delete automatically (αλληλουχία)
+    # related_name='reviews' so in the product class we'll have an attribute called reviews
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    # TextField so we don't have limitation, so customers leave longer reviews
+    date = models.DateField(auto_now=True)
+    # auto_now = True, so when we create a review object, this field gets automatically populated
