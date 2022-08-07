@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'rest_framework',
     'playground',
     'debug_toolbar',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'store_custom',
     'tags',
     'likes'
+    
 ]
 
 MIDDLEWARE = [

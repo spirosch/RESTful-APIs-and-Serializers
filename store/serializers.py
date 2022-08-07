@@ -1,10 +1,11 @@
-from dataclasses import fields
+from dataclasses import field, fields
 from decimal import Decimal
 from itertools import product
 from multiprocessing import context
 from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
-from store.models import Product, Collection
+from store.models import Product, Collection, Review
+
 
 # this class will inherit this serializer class that is defined
 # in the module (import serializers)
@@ -61,3 +62,16 @@ class ProductSerializer(serializers.ModelSerializer):
     # So here if the password do not match with the confirm password then, client get an error message, 
     # else return data (which is a dictionary. This doesn’t make sense in our content so this is just an 
     # example in a situation like this.
+
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'date', 'name', 'description']
+
+    def create(self, validated_data):
+        product_id = self.context['product_id']
+        return Review.objects.create(product_id=product_id, **validated_data)
+
+    

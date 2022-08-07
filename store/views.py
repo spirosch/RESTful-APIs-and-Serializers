@@ -5,6 +5,7 @@ from os import stat
 from turtle import title
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from django.template import RequestContext
@@ -13,8 +14,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
-from .models import Collection, Order, OrderItem, Product
-from .serializers import CollectionSerializer, ProductSerializer
+from store.filters import ProductFilter
+from .models import Collection, Order, OrderItem, Product, Review
+from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
 from store import serializers
 from django.db.models.aggregates import Count 
 # Create your views here.
@@ -22,8 +24,13 @@ from django.db.models.aggregates import Count
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.select_related('collection').all()
+
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
+    
+   
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -53,7 +60,22 @@ class CollectionViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-   
+
+class ReviewViewSet(ModelViewSet):
+    # So instead of defining two separate views, one for listing reviews and the other for working
+    # an individual review, we're using a view set that combines all operations for view sets inside
+    # a single class.
+    serializer_class = ReviewSerializer 
+    
+    def get_queryset(self):
+        return Review.objects.filter(product_id=self.kwargs['product_pk'])
+
+
+    def get_serializer_context(self):
+        return {'product_id': self.kwargs['product_pk']}
+
+
+
 
 # class ProductList(ListCreateAPIView):
 
