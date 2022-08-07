@@ -4,7 +4,7 @@ from itertools import product
 from multiprocessing import context
 from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
-from store.models import Product, Collection, Review
+from store.models import Cart, Product, Collection, Review
 
 
 # this class will inherit this serializer class that is defined
@@ -44,6 +44,37 @@ class ProductSerializer(serializers.ModelSerializer):
     def calculate_tax (self, product: Product):
         return product.unit_price * Decimal(1.1)
 
+    
+
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'date', 'name', 'description']
+
+    def create(self, validated_data):
+        product_id = self.context['product_id']
+        return Review.objects.create(product_id=product_id, **validated_data)
+
+
+
+class CartSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(read_only=True)
+    class Meta:
+        model = Cart
+        fields = ['id']
+
+
+
+
+
+
+
+
+
+
+
     # def create(self, validated_data):
     #     product = Product(**validated_data)
     #     product.other = 1
@@ -62,16 +93,3 @@ class ProductSerializer(serializers.ModelSerializer):
     # So here if the password do not match with the confirm password then, client get an error message, 
     # else return data (which is a dictionary. This doesn’t make sense in our content so this is just an 
     # example in a situation like this.
-
-
-
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = ['id', 'date', 'name', 'description']
-
-    def create(self, validated_data):
-        product_id = self.context['product_id']
-        return Review.objects.create(product_id=product_id, **validated_data)
-
-    

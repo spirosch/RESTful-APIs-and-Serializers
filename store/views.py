@@ -14,13 +14,13 @@ from django.template import RequestContext
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
 
 from store.pagination import DefaultPagination
 from .filters import ProductFilter
-from .models import Collection, Order, OrderItem, Product, Review
-from .serializers import CollectionSerializer, ProductSerializer, ReviewSerializer
+from .models import Cart, Collection, Order, OrderItem, Product, Review
+from .serializers import CartSerializer, CollectionSerializer, ProductSerializer, ReviewSerializer
 from store import serializers
 from django.db.models.aggregates import Count 
 # Create your views here.
@@ -81,7 +81,9 @@ class ReviewViewSet(ModelViewSet):
         return {'product_id': self.kwargs['product_pk']}
 
 
-
+class CartViewSet(CreateModelMixin, GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
 
 # class ProductList(ListCreateAPIView):
 
