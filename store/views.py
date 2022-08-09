@@ -60,6 +60,7 @@ class CollectionViewSet(ModelViewSet):
 
 
     def destroy(self, request, *args, **kwargs):
+        request.user
         if OrderItem.objects.filter(product_id=kwargs['pk']).count()>0:
             return Response({'error': 
             'Collection cannot be deleted because it is associate with one or more products'})
