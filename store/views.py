@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from django.template import RequestContext
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -19,8 +19,8 @@ from rest_framework import status
 
 from store.pagination import DefaultPagination
 from .filters import ProductFilter
-from .models import Cart, CartItem, Collection, Order, OrderItem, Product, Review
-from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CollectionSerializer, ProductSerializer, ReviewSerializer, UpdateCartItemSerializer
+from .models import Cart, CartItem, Collection, Customer, Order, OrderItem, Product, Review
+from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CollectionSerializer, CustomerSerializer, ProductSerializer, ReviewSerializer, UpdateCartItemSerializer
 from store import serializers
 from django.db.models.aggregates import Count 
 # Create your views here.
@@ -111,8 +111,14 @@ class CartItemViewSet(ModelViewSet):
         return CartItem.objects.filter(cart_id=self.kwargs['cart_pk']) \
             .select_related('product')
    
-    
 
+class CustomerViewSet (CreateModelMixin, 
+                       RetrieveModelMixin, 
+                       UpdateModelMixin, 
+                       GenericViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+           
 
 
 # class ProductList(ListCreateAPIView):

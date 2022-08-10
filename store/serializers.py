@@ -4,7 +4,7 @@ from itertools import product
 from multiprocessing import context
 from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
-from store.models import Cart, CartItem, Product, Collection, Review
+from store.models import Cart, CartItem, Customer, Product, Collection, Review
 
 
 # this class will inherit this serializer class that is defined
@@ -128,7 +128,11 @@ class UpdateCartItemSerializer(serializers.ModelSerializer):
         fields = ['quantity']
 
 
-
+class CustomerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+    class Meta:
+        model = Customer
+        fields = ['id', 'user_id', 'phone', 'birth_date', 'membership']
 
 
 
