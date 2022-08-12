@@ -8,7 +8,7 @@ from ssl import create_default_context
 from unittest.util import _MAX_LENGTH
 from rest_framework import serializers
 from .models import Cart, CartItem, Customer, Order, OrderItem, Product, Collection, Review
-
+from .signals import order_created
 
 # this class will inherit this serializer class that is defined
 # in the module (import serializers)
@@ -190,6 +190,8 @@ class CreateOrderSerializer(serializers.Serializer):
             OrderItem.objects.bulk_create(order_items)
 
             Cart.objects.filter(pk=cart_id).delete()
+
+            order_created.send_robust(self.__class__, order=order)
 
             return order
 
